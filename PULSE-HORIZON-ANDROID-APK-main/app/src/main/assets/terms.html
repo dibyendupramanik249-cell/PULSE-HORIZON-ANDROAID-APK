@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pulse Horizon — Terms</title>
+  <style>
+    /* Reset & Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #FFFFFF;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      font-size: 15px;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 40px;
+    }
+
+    /* Top Brand Bar */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 4px 6px 4px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: #1A73E8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: #FFFFFF;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111111;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: #555555;
+    }
+
+    /* Reusable Card */
+    .card {
+      background-color: #F5F5F5;
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid #EAEAEA;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Accordion / Collapsible */
+    .collapsible-trigger {
+      cursor: pointer;
+      user-select: none;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .chevron {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s ease;
+      stroke: #111111;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .chevron.open {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      display: block;
+      margin-top: 14px;
+      border-top: 1px solid #E0E0E0;
+      padding-top: 14px;
+    }
+
+    .collapsible-content.hidden {
+      display: none;
+    }
+
+    /* Feature & Term Bullet Lists */
+    .feature-list, .terms-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-item, .terms-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: #222222;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background-color: #1A73E8;
+      border-radius: 50%;
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .feature-item strong, .terms-item strong {
+      color: #111111;
+    }
+
+    /* Category Chips */
+    .chips-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #111111;
+      display: block;
+    }
+
+    .chips-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 480px) {
+      .chips-group {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .chip-btn {
+      background-color: #FFFFFF;
+      border: 1.5px solid #D0D0D0;
+      border-radius: 8px;
+      padding: 10px 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333333;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chip-btn.active {
+      background-color: #1A73E8;
+      border-color: #1A73E8;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    /* Form Inputs */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111111;
+    }
+
+    .text-input, .text-area {
+      width: 100%;
+      background-color: #FFFFFF;
+      border: 1.5px solid #D0D0D0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #111111;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .text-input:focus, .text-area:focus {
+      border-color: #1A73E8;
+    }
+
+    .text-area {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: #666666;
+    }
+
+    /* Checkbox Area */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0 18px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: #1A73E8;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-text {
+      font-size: 14px;
+      color: #222222;
+      font-weight: 500;
+    }
+
+    /* Big Action Buttons */
+    .big-button {
+      width: 100%;
+      min-height: 52px;
+      background-color: #1A73E8;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: background-color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .big-button:hover:not(:disabled) {
+      background-color: #1557B0;
+    }
+
+    .big-button:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    .big-button:disabled {
+      background-color: #BDBDBD;
+      color: #FFFFFF;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Inline Alert Banners (No alert()) */
+    .status-banner {
+      display: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    .status-banner.success {
+      display: block;
+      background-color: #E6F4EA;
+      color: #137333;
+      border: 1px solid #CEEAD6;
+    }
+
+    .status-banner.error {
+      display: block;
+      background-color: #FCE8E6;
+      color: #C5221F;
+      border: 1px solid #FAD2CF;
+    }
+
+    /* First-Visit Fullscreen Overlay */
+    .first-visit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #FFFFFF;
+      z-index: 9999;
+      display: none;
+      overflow-y: auto;
+      padding: 24px 16px;
+    }
+
+    .first-visit-overlay.active {
+      display: block;
+      overflow-y: auto;
+    }
+
+    .overlay-box {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 60px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body, .first-visit-overlay {
+        background-color: #0B1120;
+        color: #F1F5F9;
+      }
+      .brand-title, .card-title, .input-label, .chips-label {
+        color: #F8FAFC;
+      }
+      .brand-sub, .field-hint {
+        color: #94A3B8;
+      }
+      .card {
+        background-color: #1E293B;
+        border-color: #334155;
+      }
+      .feature-item, .terms-item, .checkbox-text {
+        color: #CBD5E1;
+      }
+      .feature-item strong, .terms-item strong {
+        color: #F8FAFC;
+      }
+      .collapsible-content {
+        border-top-color: #334155;
+      }
+      .chevron {
+        stroke: #F8FAFC;
+      }
+      .chip-btn, .text-input, .text-area {
+        background-color: #0F172A;
+        border-color: #334155;
+        color: #F8FAFC;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container" id="mainApp">
+    <!-- Brand Header -->
+    <header class="brand-header">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Pulse Horizon</h1>
+        <p class="brand-sub">Lightweight Android Browser</p>
+      </div>
+    </header>
+
+    <!-- SECTION 1: About Pulse Horizon (Collapsible) -->
+    <section class="card" aria-label="About Pulse Horizon">
+      <button type="button" class="collapsible-trigger" id="aboutToggleBtn" aria-expanded="true" aria-controls="aboutSectionContent">
+        <div class="card-title" style="margin-bottom: 0;">
+          <span>About Pulse Horizon</span>
+          <svg class="chevron open" id="aboutChevron" viewBox="0 0 24 24">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </button>
+
+      <div class="collapsible-content" id="aboutSectionContent">
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Auto-clean:</strong> History, cookies, and cache are erased when you close the browser.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Small:</strong> About 12–15 MB of storage.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Smart cache:</strong> Cache stays around 20 MB and cleans itself while you browse.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Smart downloads:</strong> Files are saved with their correct names — the browser checks the real file type (PDF, ZIP, image, video, audio, documents). Saving happens only when you tap.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Desktop mode:</strong> The DESK button shows full desktop sites.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Full screen:</strong> The URL bar hides when a page opens. Double-tap the top of the screen to show it, double-tap again to hide it.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>URL tools:</strong> Long-press the URL bar to Copy URL, Share URL, Paste and go, or open Help &amp; Feedback.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Ad block:</strong> Known ad servers are blocked — faster pages, less data.</div>
+          </li>
+          <li class="feature-item">
+            <span class="dot"></span>
+            <div><strong>Zero background:</strong> No services, no notifications, no battery use after you exit.</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+<!-- v136: every feature - what it does, where it is, how to use it -->
+    <section class="card" aria-label="How to use this browser">
+      <h2 class="card-title">How to use this browser</h2>
+      <ul class="terms-list">
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Searching the web.</strong> Type into the box on the home page and press go. Type an address instead of words and the site opens. You can also type straight into the address bar at the top at any time.
+          <br><em>Where:</em> the search box on the home page, or the address bar.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Choosing your search engine.</strong> The browser searches with whichever engine you pick, and remembers it.
+          <br><em>Where:</em> the <strong>Engine</strong> row just under the home page's search box.
+          <br><em>How:</em> tap Engine, then tap Google, Bing, DuckDuckGo or Wikipedia. A tick marks the one in use.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Shortcuts.</strong> Up to ten tiles for the sites you use most. Each shows the website's own icon.
+          <br><em>Where:</em> the grid under the search box on the home page.
+          <br><em>How:</em> tap a tile to open it. Tap <strong>More</strong> to see all of them. Tap <strong>Edit</strong> to reveal a remove button on each tile and a <strong>+ Add</strong> tile - tap Add, give it a name and an address, and it appears. Tap <strong>Done</strong> when finished.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Tabs.</strong> Keep several pages open at once and move between them.
+          <br><em>Where:</em> the number button in the toolbar, beside the three-dot menu. The number is how many tabs are open.
+          <br><em>How:</em> tap it to see your tabs, tap one to switch to it, and use <strong>New tab</strong> for a fresh one. Opening a link in a new tab: three-dot menu &rarr; <strong>Open in new tab</strong>.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Bookmarks.</strong> Save a page so you can find it again.
+          <br><em>Where:</em> the three-dot menu.
+          <br><em>How:</em> <strong>Bookmark this page</strong> saves the one you are on. <strong>Bookmarks</strong> lists everything you have saved - tap one to open it. Settings also has <strong>Clear all bookmarks</strong>.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Downloads.</strong> Save files, pictures and videos to your phone.
+          <br><em>Where:</em> the three-dot menu &rarr; <strong>Downloads</strong>.
+          <br><em>How:</em> when a page offers a file, the browser saves it and tells you when it is done. The Downloads list shows what you have saved and opens it when you tap it.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Blocking ads and trackers.</strong> Known ad servers are blocked so pages load cleaner and faster.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Settings</strong> &rarr; <strong>Block ads and trackers</strong>.
+          <br><em>How:</em> switch it on or off. Right below it, the browser shows how many have been blocked this session.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Desktop mode.</strong> Ask one site for its full desktop version instead of the mobile one.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Desktop site</strong>.
+          <br><em>How:</em> tap to turn it on for the tab you are on. It is remembered for that tab, so other tabs stay on the mobile version.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Dark or light look.</strong> Choose the theme you prefer.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Theme</strong>, or Settings &rarr; <strong>Theme (tap to change)</strong>.
+          <br><em>How:</em> tap to cycle through the options. The whole browser changes at once.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Music visualiser (edge glow).</strong> A glow around the screen edges that moves with whatever is playing.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Settings</strong> &rarr; <strong>Edge glow while media plays</strong>.
+          <br><em>How:</em> switch it on, then play music or a video in the browser. It is off until you switch it on, and the browser warns you about the battery cost first.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Background music.</strong> Keep audio playing after you leave the browser.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Settings</strong> &rarr; <strong>Background music</strong>.
+          <br><em>How:</em> switch it on and a media notification appears with play, pause and skip controls. It stops the moment the music ends or you close the browser. The browser warns you about the battery cost before it starts.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Adding a song from your phone.</strong> Play a track you already have, with the visualiser following it.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Music</strong>, or Settings &rarr; <strong>Add a song from this phone</strong>.
+          <br><em>How:</em> tap it and choose the track from your phone.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Auto-hiding the address bar.</strong> The bar slides away while you read and comes back when you want it.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Settings</strong> &rarr; <strong>Auto-hide the address bar</strong>.
+          <br><em>How:</em> switch it on. The setting applies to the tab you are on.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Copying and sharing a link.</strong>
+          <br><em>Where:</em> the three-dot menu.
+          <br><em>How:</em> <strong>Copy link</strong> puts the address on your clipboard; <strong>Share</strong> sends it to another app.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Uploading a photo or a file.</strong> Some websites ask for a picture or a document.
+          <br><em>How:</em> tap the site's own upload button and choose your camera or your files. The browser only asks for that permission at that moment, and only that one thing is shared.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>When there is no internet.</strong> If a page cannot load, the browser says so plainly instead of leaving you on a blank screen.
+          <br><em>How:</em> check your connection and tap <strong>Try again</strong> on the page.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Getting back to the home screen.</strong>
+          <br><em>Where:</em> the house button at the left of the address bar.
+          <br><em>How:</em> tap it from anywhere and you are back on the home screen.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Clearing space, and privacy on exit.</strong> The browser clears its cache and browsing data when you leave it, and Settings has <strong>Clear cache now</strong> for doing it by hand.
+          <br><em>Where:</em> three-dot menu &rarr; <strong>Settings</strong> &rarr; <strong>Clear cache now</strong>.
+        </div></li>
+
+        <li class="terms-item"><span class="dot"></span><div>
+          <strong>Help &amp; Feedback.</strong> Tell the developer what is broken or what you would like.
+          <br><em>Where:</em> three-dot menu, or press and hold the address bar and choose <strong>Help &amp; Feedback</strong>.
+          <br><em>How:</em> write your message and send it.
+        </div></li>
+
+      </ul>
+    </section>
+    <!-- SECTION 2: Terms — please read -->
+    <section class="card" aria-label="Terms of use">
+      <h2 class="card-title">Terms — please read</h2>
+      <ul class="terms-list" id="termsSource">
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Your data, your choice:</strong> Everything you keep in this browser (logins, cookies, downloads) is your responsibility. The developer cannot see or protect it.</div>
+        </li>
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Downloads:</strong> You are responsible for what you download and for following each website's rules. If you download copyrighted material without permission, the developer or the organisation will not be held liable or considered responsible for any legal consequences, damages, or copyright infringements.</div>
+        </li>
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Privacy:</strong> The browser sends nothing anywhere by itself. One thing reaches the internet only when it must: a shortcut asks the website for its own icon. Nothing else leaves the device.</div>
+        </li>
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Camera &amp; microphone:</strong> Camera is used only when you choose a file or take a photo to upload, and at no other time. Microphone is used only by the music visualiser, and only while you have it switched on. Neither is ever used in the background, and nothing either one captures leaves your device.</div>
+        </li>
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Background:</strong> The browser runs nothing in the background. The one exception is Background music, which you switch on yourself: it keeps the audio playing and shows a media notification, and it stops the moment the music ends or you close the app.</div>
+        </li>
+        <li class="terms-item">
+          <span class="dot"></span>
+          <div><strong>Not affiliated:</strong> This browser is not made by, endorsed by, or connected to Google, or to any website you visit with it. All names and logos belong to their owners.</div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- v150: the feedback form is removed. This page is the terms only. -->
+  </main>
+
+  <!-- FIRST VISIT ONLY OVERLAY -->
+  <div class="first-visit-overlay" id="firstVisitOverlay">
+    <div class="overlay-box">
+      <header class="brand-header">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+            <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Welcome to Pulse Horizon</h1>
+          <p class="brand-sub">Terms of Service</p>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2 class="card-title">Terms — please read</h2>
+        <ul class="terms-list" id="overlayTerms"></ul>
+      </section>
+
+      <label class="checkbox-container" for="firstVisitCheckbox">
+        <input type="checkbox" id="firstVisitCheckbox">
+        <span class="checkbox-text" style="font-size: 15px; font-weight: 600;">I have read & agree to The terms</span>
+      </label>
+
+      <button type="button" class="big-button" id="firstVisitSubmitBtn" disabled>
+        Agree &amp; Continue
+      </button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    (function() {
+      // 1. First Visit Check
+      var STORAGE_KEY = 'pulse_horizon_terms_accepted_v1';
+      var firstVisitOverlay = document.getElementById('firstVisitOverlay');
+      var firstVisitCheckbox = document.getElementById('firstVisitCheckbox');
+      var firstVisitSubmitBtn = document.getElementById('firstVisitSubmitBtn');
+      var mainApp = document.getElementById('mainApp');
+
+      var hasAcceptedTerms = false;
+      try {
+        hasAcceptedTerms = localStorage.getItem(STORAGE_KEY) === 'true';
+      } catch (err) {}
+
+      if (!hasAcceptedTerms && firstVisitOverlay) {
+        firstVisitOverlay.classList.add('active');
+      }
+
+      // one source of truth: the first-run screen shows the same terms
+      try {
+        var src = document.getElementById('termsSource');
+        var dst = document.getElementById('overlayTerms');
+        if (src && dst) dst.innerHTML = src.innerHTML;
+      } catch (err) {}
+
+      firstVisitCheckbox.addEventListener('change', function() {
+        firstVisitSubmitBtn.disabled = !this.checked;
+      });
+
+      firstVisitSubmitBtn.addEventListener('click', function() {
+        if (!firstVisitCheckbox.checked) return;
+        try {
+          localStorage.setItem(STORAGE_KEY, 'true');
+        } catch (e) {
+          // Continue even if local storage is restricted
+        }
+        try {
+          if (window.AndroidTerms && window.AndroidTerms.acceptTerms) {
+            window.AndroidTerms.acceptTerms();
+            return;
+          }
+        } catch (e) {}
+        window.location.replace('https://pulse-horizon.local/start');
+      });
+
+      // 2. Collapsible About Section
+      var aboutToggleBtn = document.getElementById('aboutToggleBtn');
+      var aboutContent = document.getElementById('aboutSectionContent');
+      var aboutChevron = document.getElementById('aboutChevron');
+
+      aboutToggleBtn.addEventListener('click', function() {
+        var isCurrentlyHidden = aboutContent.classList.contains('hidden');
+        if (isCurrentlyHidden) {
+          aboutContent.classList.remove('hidden');
+          aboutChevron.classList.add('open');
+          aboutToggleBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          aboutContent.classList.add('hidden');
+          aboutChevron.classList.remove('open');
+          aboutToggleBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // 3. Category Chips Selection
+      var chipButtons = document.querySelectorAll('.chip-btn');
+      var selectedCategory = 'Bug';
+
+      chipButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          chipButtons.forEach(function(b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-checked', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-checked', 'true');
+          selectedCategory = btn.getAttribute('data-category');
+        });
+      });
+
+      // 4. Form Validation & Send Button Enablement
+      var feedbackForm = document.getElementById('feedbackForm'); // v150: may be null - the form is gone
+      var feedbackMessage = document.getElementById('feedbackMessage');
+      var feedbackName = document.getElementById('feedbackName');
+      var termsAgreeCheckbox = document.getElementById('termsAgreeCheckbox');
+      var sendBtn = document.getElementById('sendBtn');
+      var statusBanner = document.getElementById('statusBanner');
+      var messageCharCount = document.getElementById('messageCharCount');
+
+      function validateInputs() {
+        var msgLength = feedbackMessage.value.trim().length;
+        var isCheckboxChecked = termsAgreeCheckbox.checked;
+
+        if (msgLength > 0 && msgLength < 3) {
+          messageCharCount.textContent = 'Too short: please enter at least 3 characters.';
+          messageCharCount.style.color = '#C5221F';
+        } else {
+          messageCharCount.textContent = 'Minimum 3 characters required.';
+          messageCharCount.style.color = '#666666';
+        }
+
+        sendBtn.disabled = !(isCheckboxChecked && msgLength >= 3);
+      }
+
+      feedbackMessage.addEventListener('input', validateInputs);
+      termsAgreeCheckbox.addEventListener('change', validateInputs);
+
+      function showBanner(type, messageText) {
+        statusBanner.className = 'status-banner ' + type;
+        statusBanner.textContent = messageText;
+        statusBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function hideBanner() {
+        statusBanner.className = 'status-banner';
+        statusBanner.textContent = '';
+      }
+
+      // 5. Submit Handler
+      if (feedbackForm) feedbackForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        hideBanner();
+
+        var message = feedbackMessage.value.trim();
+        var name = feedbackName.value.trim();
+
+        if (message.length < 3) {
+          showBanner('error', 'Please enter at least 3 characters in the message.');
+          return;
+        }
+
+        if (!termsAgreeCheckbox.checked) {
+          showBanner('error', 'Please confirm that you have read the terms.');
+          return;
+        }
+
+        sendBtn.disabled = true;
+        var originalBtnText = sendBtn.textContent;
+        sendBtn.textContent = 'Sending...';
+
+        var payload = {
+          category: selectedCategory,
+          message: message,
+          name: name
+        };
+
+        fetch('/feedback', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res) {
+          return res.json().then(function(data) {
+            return { status: res.status, ok: res.ok, data: data };
+          });
+        })
+        .then(function(result) {
+          if (result.ok && result.data && result.data.ok) {
+            showBanner('success', 'Sent. Thank you');
+            // Clear the form
+            feedbackMessage.value = '';
+            feedbackName.value = '';
+            termsAgreeCheckbox.checked = false;
+            // Reset chips to Bug
+            chipButtons.forEach(function(b, idx) {
+              if (idx === 0) {
+                b.classList.add('active');
+                b.setAttribute('aria-checked', 'true');
+                selectedCategory = 'Bug';
+              } else {
+                b.classList.remove('active');
+                b.setAttribute('aria-checked', 'false');
+              }
+            });
+            validateInputs();
+          } else {
+            var errorMessage = (result.data && result.data.error) ? result.data.error : 'Failed to send feedback. Please try again later.';
+            showBanner('error', errorMessage);
+          }
+        })
+        .catch(function(err) {
+          showBanner('error', 'Network error. Please check your connection and try again.');
+        })
+        .finally(function() {
+          sendBtn.textContent = originalBtnText;
+          validateInputs();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
