@@ -1,10 +1,7 @@
 name: Build Android APK
 
+# MANUAL ONLY. Nothing starts unless you press Run workflow.
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
