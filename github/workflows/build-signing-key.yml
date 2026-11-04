@@ -1,0 +1,79 @@
+name: Build signing key
+
+on:
+  workflow_dispatch:
+    inputs:
+      key_alias:
+        description: 'Key alias (e.g. pulsehorizon)'
+        required: true
+        default: 'pulsehorizon'
+      store_password:
+        description: 'Keystore password (min 6 chars) - remember it'
+        required: true
+      key_password:
+        description: 'Key password (min 6 chars) - remember it'
+        required: true
+      validity_years:
+        description: 'Validity in years'
+        required: true
+        default: '25'
+
+jobs:
+  make-key:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Generate the keystore
+        run: |
+          set -e
+          keytool -genkeypair -v \
+            -keystore release.keystore \
+            -storetype JKS \
+            -storepass "${{ inputs.store_password }}" \
+            -keypass "${{ inputs.key_password }}" \
+            -alias "${{ inputs.key_alias }}" \
+            -keyalg RSA -keysize 2048 \
+            -validity "${{ inputs.validity_years }}00" \
+            -dname "CN=Pulse Horizon, OU=Mobile, O=Pulse Horizon, L=India, C=IN"
+          keytool -list -v -keystore release.keystore \
+            -storepass "${{ inputs.store_password }}" | head -20
+
+      - name: Base64 encode it
+        run: |
+          base64 -w0 release.keystore > release.keystore.base64
+          echo "Keystore: $(wc -c < release.keystore) bytes"
+          echo "Base64:   $(wc -c < release.keystore.base64) chars"
+
+      - name: Upload the keystore
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-keystore
+          path: |
+            release.keystore
+            release.keystore.base64
+          if-no-files-found: error
+
+      - name: What to do next
+        run: |
+          cat <<'EOF'
+          ================================================================
+          DOWNLOAD THE ARTIFACT NOW, THEN DELETE IT AND THIS RUN.
+
+          Add these four secrets in
+          Settings -> Secrets and variables -> Actions:
+
+            RELEASE_KEYSTORE_BASE64   <- contents of release.keystore.base64
+            RELEASE_STORE_PASSWORD    <- the store password you typed
+            RELEASE_KEY_ALIAS         <- the alias you typed
+            RELEASE_KEY_PASSWORD      <- the key password you typed
+
+          Then keep release.keystore somewhere safe off GitHub.
+          ================================================================
+          EOF
