@@ -1,0 +1,81 @@
+name: Singing key (run ONCE)
+
+# Creates Pulse Horizon's permanent signing key on GitHub's server, encrypts it
+# with your KEYSTORE_PASSWORD secret, and commits only the ENCRYPTED file.
+#
+# BEFORE RUNNING: Repo -> Settings -> Secrets and variables -> Actions
+#                 -> New repository secret -> name: KEYSTORE_PASSWORD
+#
+# Run it: Actions tab -> "Singing key (run ONCE)" -> Run workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Replace the existing key? (NO = keep old key. A new key breaks updates of installed apps)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  make-key:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Check the password secret exists
+        env:
+          PW: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$PW" ]; then
+            echo "ERROR: Add the repository secret KEYSTORE_PASSWORD first."
+            echo "Repo -> Settings -> Secrets and variables -> Actions -> New repository secret"
+            exit 1
+          fi
+
+      - name: Stop if a key already exists
+        id: exists
+        run: |
+          if [ -f ".github/signing/release.keystore.enc" ] && [ "${{ inputs.force }}" != "true" ]; then
+            echo "A signing key already exists. Nothing to do (tick 'force' to replace it)."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create the keystore and encrypt it
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          PW: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          set -e
+          mkdir -p .github/signing
+          keytool -genkeypair -v \
+            -keystore release.keystore \
+            -alias pulsehorizon \
+            -keyalg RSA -keysize 2048 -validity 10950 \
+            -storepass "$PW" -keypass "$PW" \
+            -dname "CN=Pulse Horizon, O=Dibyendu Pramanik, C=IN"
+          openssl enc -aes-256-cbc -pbkdf2 -salt \
+            -in release.keystore -out .github/signing/release.keystore.enc -pass pass:"$PW"
+          rm -f release.keystore
+          echo "Keystore created and encrypted."
+
+      - name: Commit the encrypted keystore
+        if: steps.exists.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f .github/signing/release.keystore.enc
+          git commit -m "Add encrypted release signing keystore" || echo "Nothing changed"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"
