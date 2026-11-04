@@ -1,6 +1,5 @@
 name: Build Android APK
 
-# MANUAL ONLY. Nothing starts unless you press Run workflow.
 on:
   workflow_dispatch:
 
@@ -19,12 +18,35 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Find the Gradle project
+        run: |
+          set -e
+          if [ -f settings.gradle.kts ] || [ -f settings.gradle ]; then
+            DIR="."
+          else
+            DIR=$(find . -maxdepth 3 \( -name settings.gradle.kts -o -name settings.gradle \) -printf '%h\n' | head -1)
+          fi
+          if [ -z "$DIR" ]; then
+            echo "No settings.gradle(.kts) found anywhere in the repo."
+            echo "The project files are not in this repository."
+            exit 1
+          fi
+          DIR=${DIR#./}
+          echo "PROJECT_DIR=$DIR" >> "$GITHUB_ENV"
+          echo "Project directory: $DIR"
+          ls -la "$DIR" | head -20
+
       - name: Generate Gradle wrapper and debug key
+        working-directory: ${{ env.PROJECT_DIR }}
         run: |
           set -e
           if [ ! -f gradlew ]; then
-            VER=$(grep -oE 'gradle-[0-9]+\.[0-9]+(\.[0-9]+)?' gradle/wrapper/gradle-wrapper.properties | head -1 | sed 's/gradle-//')
-            if [ -z "$VER" ]; then VER="9.3.1"; fi
+            VER=""
+            if [ -f gradle/wrapper/gradle-wrapper.properties ]; then
+              VER=$(grep -oE 'gradle-[0-9]+\.[0-9]+(\.[0-9]+)?' gradle/wrapper/gradle-wrapper.properties | head -1 | sed 's/gradle-//')
+            fi
+            if [ -z "$VER" ]; then VER="8.7"; fi
+            echo "Generating wrapper for Gradle $VER"
             gradle wrapper --gradle-version "$VER"
           fi
           chmod +x gradlew
@@ -36,6 +58,7 @@ jobs:
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
           fi
+          ls -la gradlew debug.keystore
 
       - name: Is the release signing key configured?
         id: signing
@@ -52,15 +75,17 @@ jobs:
         if: steps.signing.outputs.configured == 'true'
         run: |
           set -e
-          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > release.keystore
-          test -s release.keystore || { echo "keystore decoded to nothing"; exit 1; }
-          echo "RELEASE_STORE_FILE=release.keystore" >> "$GITHUB_ENV"
+          KS="$GITHUB_WORKSPACE/${{ env.PROJECT_DIR }}/release.keystore"
+          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > "$KS"
+          test -s "$KS" || { echo "keystore decoded to nothing"; exit 1; }
+          echo "RELEASE_STORE_FILE=$KS" >> "$GITHUB_ENV"
           echo "RELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }}" >> "$GITHUB_ENV"
           echo "RELEASE_KEY_ALIAS=${{ secrets.RELEASE_KEY_ALIAS }}" >> "$GITHUB_ENV"
           echo "RELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}" >> "$GITHUB_ENV"
-          echo "Keystore ready."
+          echo "Keystore ready at $KS"
 
       - name: Build debug APK
+        working-directory: ${{ env.PROJECT_DIR }}
         run: |
           set +e
           ./gradlew assembleDebug --console=plain > build.log 2>&1
@@ -72,6 +97,7 @@ jobs:
 
       - name: Build signed release APK
         if: steps.signing.outputs.configured == 'true'
+        working-directory: ${{ env.PROJECT_DIR }}
         run: |
           set +e
           ./gradlew assembleRelease --console=plain > release.log 2>&1
@@ -86,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pulse-horizon-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
 
       - name: Upload signed release APK
@@ -94,5 +120,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pulse-horizon-release
-          path: app/build/outputs/apk/release/*.apk
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
